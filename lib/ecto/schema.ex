@@ -1029,7 +1029,7 @@ defmodule Ecto.Schema do
   def __belongs_to__(mod, name, queryable, opts) do
     check_options!(opts, [:foreign_key, :references, :define_field, :type], "belongs_to/3")
 
-    opts = Keyword.put_new(opts, :foreign_key, :"#{name}_id")
+    opts = Keyword.put_new(opts, :foreign_key, suffix_id(name))
     foreign_key_type = opts[:type] || Module.get_attribute(mod, :foreign_key_type)
 
     if Keyword.get(opts, :define_field, true) do
@@ -1037,6 +1037,14 @@ defmodule Ecto.Schema do
     end
 
     association(mod, :one, name, Ecto.Association.BelongsTo, [queryable: queryable] ++ opts)
+  end
+
+  defp suffix_id(name) do
+    if String.ends_with?(to_string(name), "_") do
+      :"#{name}id"
+    else
+      :"#{name}_id"
+    end
   end
 
   @doc false

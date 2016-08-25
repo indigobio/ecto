@@ -148,7 +148,14 @@ defmodule Ecto.Association do
   """
   def association_key(module, suffix) do
     prefix = module |> Module.split |> List.last |> underscore
-    :"#{prefix}_#{suffix}"
+    if (suffix |> to_string |> String.starts_with?("_")) do
+      :"#{prefix}#{suffix}"
+    else
+      :"#{prefix}_#{suffix}"
+    end
+  end
+
+  defp suffix_id(prefix, suffix) do
   end
 
   defp underscore(""), do: ""
